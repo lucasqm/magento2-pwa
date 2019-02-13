@@ -14,18 +14,18 @@ class Cache extends \Magento\Framework\App\Action\Action
      * Constructor
      *
      * @param \Magento\Framework\App\Action\Context  $context
-	 * @param \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
+     * @param \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
      * @param \Psr\Log\LoggerInterface $logger
      * @param \Resultate\PWA\Helper\Data $helper
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
-		\Magento\Framework\Controller\Result\JsonFactory $jsonFactory,
+        \Magento\Framework\Controller\Result\JsonFactory $jsonFactory,
         \Psr\Log\LoggerInterface $logger,
         \Resultate\PWA\Helper\Data $helper
     ) {
         $this->logger = $logger;
-		$this->_jsonFactory = $jsonFactory;
+        $this->_jsonFactory = $jsonFactory;
         $this->_helper = $helper;
         parent::__construct($context);
     }
@@ -73,7 +73,8 @@ class Cache extends \Magento\Framework\App\Action\Action
         foreach ($confRoutes as $data) {
             $response[] = $data['route'];
         }
-        return $response;
+
+        return array_merge($response, $this->_helper->getCacheAssets());
     }
 
     private function _getCacheNames()

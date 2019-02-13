@@ -2,7 +2,7 @@
 
 This a simple module to make your site PWA.
 
-### Installation
+## Installation
 
 You need modify your Nginx configuration file for the module to work.
 
@@ -20,12 +20,12 @@ Add this in media location...
 add_header 'Service-Worker-Allowed' '/';
 ```
 
-### Configurations
-All the configurations are in `Store > Configuration > Resultate > PWA Configs`
+## Configurations
+All the configurations are in _**Store > Configuration > Resultate > PWA Configs**_
 
-#### Configure your manifest
+### Configure your manifest
 
-Configure your `manifest.json`.
+Configure your **_manifest.json_**.
 
 Add the tags and values...
 
@@ -40,8 +40,9 @@ E.g.:
 | theme_color | #FFFFFF |
 | display | standalone |
 
-`You can upload your icons in the configurations, but you need save to upload the file!`
-`All the files uploaded are listed in the configuration!`
+**You can upload your icons in the configurations, but you need save to upload the file!**
+
+**All the files uploaded are listed in the configuration!**
 
 Add your tag icons...
 
@@ -52,7 +53,7 @@ E.g.:
 | /media/pwa/manifest/icons/default/icon-192.png | image/png | 192x192 |
 | /media/pwa/manifest/icons/default/icon-512.png | image/png | 512x512 |
 
-#### Configure your Service Worker
+### Configure your Service Worker
 
 Add your pre cached routes...
 
@@ -67,7 +68,7 @@ E.g.:
 
 Configure your cache max age...
 
-`In this field you can select 1-7 days.`
+**In this field you can select 1-7 days.**
 
 Add your cache prefix...
 
@@ -78,14 +79,14 @@ my-site-prd
 
 Add your cache suffix...
 
-`If empty, the value is the deploy version.`
+**If empty, the value is the deploy version.**
 
 E.g.:
 ```
 v1
 ```
 
-#### Configure [OneSignal](https://onesignal.com)
+### Configure [OneSignal](https://onesignal.com)
 
 This configuration is if you wants add the [OneSignal](https://onesignal.com) in your site.
 

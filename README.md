@@ -1,3 +1,5 @@
+>Ignore my awful english!
+
 # Magento 2 PWA
 
 This a simple module to make your site PWA.

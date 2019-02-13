@@ -55,6 +55,8 @@ E.g.:
 | /media/pwa/manifest/icons/default/icon-192.png | image/png | 192x192 |
 | /media/pwa/manifest/icons/default/icon-512.png | image/png | 512x512 |
 
+**After save, click on button to generate manifest.json**
+
 ### Configure your Service Worker
 
 Add your pre cached routes...

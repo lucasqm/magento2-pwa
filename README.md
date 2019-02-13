@@ -28,6 +28,7 @@ All the configurations are in `Store > Configuration > Resultate > PWA Configs`
 Configure your `manifest.json`.
 
 Add the tags and values...
+
 E.g.:
 
 | Tags | Values |
@@ -43,6 +44,7 @@ E.g.:
 `All the files uploaded are listed in the configuration!`
 
 Add your tag icons...
+
 E.g.:
 
 | SRC | Type | Sizes |
@@ -53,6 +55,7 @@ E.g.:
 #### Configure your Service Worker
 
 Add your pre cached routes...
+
 E.g.:
 
 | Route |
@@ -63,16 +66,20 @@ E.g.:
 | /cat2 |
 
 Configure your cache max age...
+
 `In this field you can select 1-7 days.`
 
 Add your cache prefix...
+
 E.g.:
 ```
 my-site-prd
 ```
 
 Add your cache suffix...
+
 `If empty, the value is the deploy version.`
+
 E.g.:
 ```
 v1
@@ -83,6 +90,7 @@ v1
 This configuration is if you wants add the [OneSignal](https://onesignal.com) in your site.
 
 Add your appId...
+
 E.g.:
 ```
 1234asd-asd1234-1234asd-asd1234

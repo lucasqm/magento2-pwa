@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <link rel="manifest" src="/media/pwa/manifest/manifest.json" src_type="url"/>
+        <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async="" src_type="url"/>
+        <meta name="theme-color" content="#563D90"/>
+    </head>
+</page>

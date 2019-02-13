@@ -1,0 +1,37 @@
+<?php 
+$enable = $this->helper('Resultate\PWA\Helper\Data')->getGeneralConfig('status');
+$suffix = $this->helper('Resultate\PWA\Helper\Data')->getSWSuffix();
+$enableOneSignal = $this->helper('Resultate\PWA\Helper\Data')->getOneSignalConfig('status');
+$appId = $this->helper('Resultate\PWA\Helper\Data')->getOneSignalConfig('app_id');
+$swRoute = $enableOneSignal ? "/OneSignalSDKWorker.js" : "/sw.js";
+?>
+<script async type="text/javascript"> 
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+  <?php if($enable): ?>
+    <?php if($enableOneSignal): ?>
+    OneSignal.init({
+      appId: "<?php echo $appId;?>",
+    });
+    <?php endif; ?>
+    navigator.serviceWorker.register('<?php echo $swRoute;?>', {
+        scope: '/'
+    })
+    .then(function(reg) {
+      console.log('Registration successful, scope is:', reg.scope);
+      reg.sync.register('<?php echo $suffix ?>');  
+    })
+    .catch(function(error) {
+      console.log('Service worker registration failed, error:', error);
+    });
+  <?php else: ?>
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      for(let registration of registrations)
+      {  
+        registration.unregister();
+      }
+    });
+  <?php endif; ?>
+  });
+}
+</script>

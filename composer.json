@@ -1,0 +1,37 @@
+{
+    "name": "resultate/module-pwa",
+    "description": "Magento PWA",
+    "type": "magento2-module",
+    "license": "proprietary",
+    "authors": [
+        {
+            "email": "lucas.quintela@resultate.com.br",
+            "name": "Lucas Quintela"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Resultate\\PWA\\": ""
+        }
+    },
+    "extra": {
+        "map": [
+            [
+                "sw.js",
+                "sw.js"
+            ],
+            [
+                "OneSignalSDKUpdaterWorker.js",
+                "OneSignalSDKUpdaterWorker.js"
+            ],
+            [
+                "OneSignalSDKWorker.js",
+                "OneSignalSDKWorker.js"
+            ]
+        ]
+    }
+}

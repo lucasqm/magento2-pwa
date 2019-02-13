@@ -1,0 +1,79 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+	<system>
+        <tab id="resultate" translate="label" sortOrder="0" showInDefault="1">
+            <label>Resultate</label>
+        </tab>
+        <section id="resultate_pwa_configs" translate="label" type="text" sortOrder="10" showInDefault="1">
+            <label>PWA Configs</label>
+            <tab>resultate</tab>
+            <resource>Resultate_PWA::config_pwa</resource>
+            <group id="general" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" >
+                <label>Configurações Gerais</label>
+                <field id="status" translate="label" type="select" showInDefault="1" sortOrder="5">
+                    <label>Ativo</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="manifest" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" >
+                <label>Manifest Config</label>
+                <field id="manifest_tags" translate="label" sortOrder="5" showInDefault="5" showInWebsite="1" showInStore="0">
+                    <label>Tags</label>
+                    <frontend_model>Resultate\PWA\Block\System\Config\Form\Tags</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+                <field id="manifest_icon_update" translate="label" type="Magento\Config\Block\System\Config\Form\Field\File" sortOrder="10" showInDefault="1">
+                    <label>Subir Icones</label>
+                    <backend_model>Resultate\PWA\Model\Config\Backend\File</backend_model>
+                    <upload_dir config="system" scope_info="1">pwa/manifest/icons</upload_dir>
+                </field>
+                <field id="manifest_icons_list" translate="label" type="label" sortOrder="15" showInDefault="1">
+                    <label>Lista de Icones</label>
+                    <upload_dir config="system" scope_info="1">pwa/manifest/icons</upload_dir>
+                    <frontend_model>Resultate\PWA\Block\System\Config\Form\FileList</frontend_model>
+                </field>
+                <field id="manifest_icons" translate="label" sortOrder="20" showInDefault="5" showInWebsite="1" showInStore="0">
+                    <label>Tags Icones</label>
+                    <frontend_model>Resultate\PWA\Block\System\Config\Form\Icons</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+                <field id="manifest_generate" translate="label" type="button" sortOrder="25" showInDefault="1">
+                    <frontend_model>Resultate\PWA\Block\System\Config\Form\Generate</frontend_model>
+                    <label></label>
+                </field>
+            </group>
+            <group id="service_worker" translate="label" type="text" sortOrder="15" showInDefault="1" showInWebsite="1" >
+                <label>Service Worker Config</label>
+                <field id="sw_cache_max_age" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Validade do Cache</label>        
+                    <source_model>Resultate\PWA\Model\Config\Backend\CacheMaxAge</source_model>
+                </field>
+                <field id="sw_cache_prefix" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Prefixo do Cache</label>
+                </field>
+                <field id="sw_cache_suffix" translate="label" type="text" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sufixo do Cache</label>
+                    <comment>Deixe vazio para usar a versão do deploy.</comment>
+                    <frontend_model>Resultate\PWA\Block\System\Config\Form\Suffix</frontend_model>
+                    <backend_model>Resultate\PWA\Model\Config\Backend\Suffix</backend_model>
+                </field>
+                <field id="sw_cache_routes" translate="label" sortOrder="3" showInDefault="20" showInWebsite="1" showInStore="0">
+                    <label>Rotas Cacheáveis</label>
+                    <comment>Rotas que serão cacheadas e usadas como fallback. Ex. <strong>/</strong> para home.</comment>
+                    <frontend_model>Resultate\PWA\Block\System\Config\Form\Routes</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+            </group>
+            <group id="one_signal" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" >
+                <label>OneSignal Config</label>
+                <field id="status" translate="label" type="select" showInDefault="1" sortOrder="5">
+                    <label>Ativo</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="app_id" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>AppId</label>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

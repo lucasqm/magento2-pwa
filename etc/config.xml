@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <resultate_pwa_configs>
+            <general>
+                <status>0</status>
+            </general>
+            <one_signal>
+            	<status>0</status>
+            </one_signal>
+        </resultate_pwa_configs>
+    </default>
+</config>

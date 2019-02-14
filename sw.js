@@ -12,7 +12,7 @@ loadCachedConfig();
 
 self.addEventListener('install', async e => {
   config = await loadConfigs(true);
-  await loadPreCache();
+  loadPreCache();
   return self.skipWaiting();
 });
 
@@ -82,7 +82,7 @@ self.addEventListener('fetch', async e => {
   var response;
   var fetchPermited = true;
 
-  if(!config || !config.cacheName)
+  if(config === {})
   {
     await loadCachedConfig();
     console.log('Config loaded on fetch!');
@@ -94,25 +94,16 @@ self.addEventListener('fetch', async e => {
     }
   });
 
-  if(!fetchPermited){
-    return e;
-  }
-
-  if (url.origin === location.origin && 
+  if (fetchPermited && (url.origin === location.origin && 
     req.method === 'GET' && 
     req.headers.get('accept').includes('text/html') && 
     destination === 'document'
-  ) {
-    response = networkAndCache(req);
-  }else {
-    return e;
+  )) {
+    e.waitUntil(
+      e.respondWith( networkAndCache(req) )
+    );
   }
-
-  e.respondWith( response.catch( e => {
-    console.log(e);
-    console.log("Failed to fetch!", req.url);
-  }) );
-
+  return e;
 });
 
 self.addEventListener('sync', e => {

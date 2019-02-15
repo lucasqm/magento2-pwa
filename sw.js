@@ -98,27 +98,27 @@ self.addEventListener('fetch', async e => {
 });
 
 self.addEventListener('sync', e => {
-  if(e.tag !== config.cacheSuffix)
-  {
-    flushCache(e);
-    console.log('Cache cleared!');
-  }
+  loadCachedConfig().then( () => {
+    if(e.tag !== config.cacheSuffix)
+    {
+      flushCache(e);
+      console.log('Cache cleared!');
+    }
+  });
 });
 
-async function flushCache(e)
+function flushCache(e)
 {
-  e.waitUntil(
     caches.keys().then(function(cacheNames) {
       return Promise.all(
         cacheNames.map(function(cacheName) {
           return caches.delete(cacheName);
         })
       );
-    })
-  );
-
-  config = await loadConfigs();
-  await loadPreCache();
+    }).then( async () => {
+        config = await loadConfigs();
+        await loadPreCache();
+    });
 }
 
 async function loadPreCache()
@@ -138,8 +138,8 @@ async function networkAndCache(req) {
   }catch (e){
     await loadCachedConfig();
     cacheName = config.cacheName.default;
-    console.log(config);
   }
+
   const cache = await caches.open(cacheName);
   try {
     const fresh = await fetch(req);
@@ -191,12 +191,10 @@ async function loadConfigs()
     }
     const data = await fresh.json();
     try{
-      console.log('Config cached');
       await cache.put(configSetup.configUrl, clone);
     } catch(e) {
       console.log(e);
     }
-
     return data;
   } catch(e) {
     console.log(e);
@@ -215,7 +213,7 @@ async function loadCachedConfig()
   if(cached)
   {
     config = await cached.json();    
-  }else{
+  } else {
     config = await loadConfigs();
   }
 }

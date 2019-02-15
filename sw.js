@@ -11,7 +11,7 @@ config = {};
 loadCachedConfig();
 
 self.addEventListener('install', async e => {
-  config = await loadConfigs(true);
+  config = await loadConfigs();
   loadPreCache();
   return self.skipWaiting();
 });
@@ -79,14 +79,7 @@ self.addEventListener('fetch', async e => {
   const req = e.request;
   const url = new URL(req.url);
   const destination = req.destination;
-  var response;
   var fetchPermited = true;
-
-  if(config === {})
-  {
-    await loadCachedConfig();
-    console.log('Config loaded on fetch!');
-  }
 
   blackList.forEach(tag => {
     if(req.url.includes(tag)){
@@ -99,9 +92,7 @@ self.addEventListener('fetch', async e => {
     req.headers.get('accept').includes('text/html') && 
     destination === 'document'
   )) {
-    e.waitUntil(
-      e.respondWith( networkAndCache(req) )
-    );
+    e.respondWith( networkAndCache(req) );
   }
   return e;
 });
@@ -126,7 +117,7 @@ async function flushCache(e)
     })
   );
 
-  config = await loadConfigs(true);
+  config = await loadConfigs();
   await loadPreCache();
 }
 
@@ -141,7 +132,15 @@ async function loadPreCache()
 }
 
 async function networkAndCache(req) {
-  const cache = await caches.open(config.cacheName.default);
+  var cacheName;
+  try{
+    cacheName = config.cacheName.default;
+  }catch (e){
+    await loadCachedConfig();
+    cacheName = config.cacheName.default;
+    console.log(config);
+  }
+  const cache = await caches.open(cacheName);
   try {
     const fresh = await fetch(req);
     await cache.put(req, fresh.clone());
@@ -175,7 +174,7 @@ function createCacheBustedRequest(url)
   return new Request(bustedUrl);
 }
 
-async function loadConfigs(install = false)
+async function loadConfigs()
 {
   const configSetup = {
     configUrl: '/pwa/config/cache',
@@ -201,10 +200,6 @@ async function loadConfigs(install = false)
     return data;
   } catch(e) {
     console.log(e);
-    if(!install){
-      const cached = await cache.match(configSetup.configUrl);
-      return await cached.json();
-    }
     throw new Error(e);
   }
 }
@@ -220,5 +215,7 @@ async function loadCachedConfig()
   if(cached)
   {
     config = await cached.json();    
+  }else{
+    config = await loadConfigs();
   }
 }

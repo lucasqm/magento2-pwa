@@ -1,6 +1,15 @@
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-sw.js');
+const PRODUCTION = true;
 
-const version = "v1.0.3";
+var scope = "prod";
+if(!PRODUCTION){
+  scope = "dev";
+}
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-core.'+scope+'.js');
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-routing.'+scope+'.js');
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-strategies.'+scope+'.js');
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-cache-expiration.'+scope+'.js');
+
+const version = "v1.0.5";
 const blackList = [
   'webadmin',
   'checkout',
@@ -8,7 +17,69 @@ const blackList = [
 ];
 
 config = {};
-loadCachedConfig();
+
+loadCachedConfig().then(() => {
+
+  if(!PRODUCTION){
+    workbox.core.setLogLevel(workbox.core.LOG_LEVELS.log);
+  }
+
+  workbox.core.setCacheNameDetails({
+    prefix: config.cachePrefix,
+    suffix: config.cacheSuffix,
+    precache: 'precache-'.concat(config.cachePrefix),
+    runtime: 'runtime-'.concat(config.cachePrefix)
+  });
+
+  workbox.routing.registerRoute(
+    /.*\.js/,
+    workbox.strategies.networkFirst({
+      cacheName: 'js-cache',
+      plugins: [
+        new workbox.expiration.Plugin({
+          maxAgeSeconds: config.cacheMaxAgeSeconds,
+        }),
+      ]
+    })
+  );
+
+  workbox.routing.registerRoute(
+    /.*\.css/,
+    workbox.strategies.staleWhileRevalidate({
+      cacheName: 'css-cache',
+      plugins: [
+        new workbox.expiration.Plugin({
+          maxAgeSeconds: config.cacheMaxAgeSeconds,
+        }),
+      ]
+    })
+  );
+
+  workbox.routing.registerRoute(
+    /.*\.(?:png|jpg|jpeg|svg|gif|ico)/g,
+    workbox.strategies.staleWhileRevalidate({
+      cacheName: 'image-cache',
+      plugins: [
+        new workbox.expiration.Plugin({
+          maxAgeSeconds: config.cacheMaxAgeSeconds,
+        }),
+      ]
+    })
+  );
+
+  workbox.routing.registerRoute(
+    /.*\.(?:ttf|otf|woff|woff2|eot)/g,
+    workbox.strategies.staleWhileRevalidate({
+      cacheName: 'font-cache',
+      plugins: [
+        new workbox.expiration.Plugin({
+          maxAgeSeconds: config.cacheMaxAgeSeconds
+        }),
+      ]
+    })
+  );
+
+});
 
 self.addEventListener('install', async e => {
   config = await loadConfigs();
@@ -16,62 +87,14 @@ self.addEventListener('install', async e => {
   return self.skipWaiting();
 });
 
-workbox.core.setCacheNameDetails({
-  prefix: config.cachePrefix,
-  suffix: config.cacheSuffix,
-  precache: 'precache-'+config.cachePrefix,
-  runtime: 'runtime-'+config.cachePrefix
-}); 
-
-workbox.routing.registerRoute(
-  /.*\.js/,
-  workbox.strategies.networkFirst({
-    cacheName: 'js-cache',
-    plugins: [
-      new workbox.expiration.Plugin({
-        maxAgeSeconds: config.cacheMaxAgeSeconds,
-      }),
-    ]
-  })
-);
-
-workbox.routing.registerRoute(
-  /.*\.css/,
-  workbox.strategies.staleWhileRevalidate({
-    cacheName: 'css-cache',
-    plugins: [
-      new workbox.expiration.Plugin({
-        maxAgeSeconds: config.cacheMaxAgeSeconds,
-      }),
-    ]
-  })
-);
-
-workbox.routing.registerRoute(
-  /.*\.(?:png|jpg|jpeg|svg|gif|ico)/g,
-  workbox.strategies.staleWhileRevalidate({
-    cacheName: 'image-cache',
-    plugins: [
-      new workbox.expiration.Plugin({
-        maxAgeSeconds: config.cacheMaxAgeSeconds,
-      }),
-    ]
-  })
-);
-
-workbox.routing.registerRoute(
-  /.*\.(?:ttf|otf|woff|woff2|eot)/g,
-  workbox.strategies.staleWhileRevalidate({
-    cacheName: 'font-cache',
-    plugins: [
-      new workbox.expiration.Plugin({
-        maxAgeSeconds: config.cacheMaxAgeSeconds
-      }),
-    ]
-  })
-);
-
 self.addEventListener('activate', e => {
+  loadCachedConfig().then( () => {
+    if(e.tag !== config.cacheSuffix)
+    {
+      flushCache(e);
+      console.log('Cache cleared!');
+    }
+  });
   self.clients.claim();
 });
 
@@ -116,8 +139,8 @@ function flushCache(e)
         })
       );
     }).then( async () => {
-        config = await loadConfigs();
-        await loadPreCache();
+      config = await loadConfigs();
+      await loadPreCache();
     });
 }
 

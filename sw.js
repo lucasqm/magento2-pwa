@@ -116,7 +116,14 @@ self.addEventListener('fetch', async e => {
     destination === 'document'
   )) {
     e.respondWith( networkAndCache(req) );
+  } else if (!fetchPermited && (url.origin === location.origin && 
+    req.method === 'GET' && 
+    req.headers.get('accept').includes('text/html') && 
+    destination === 'document'
+  )){
+    e.respondWith(fallBackCache());
   }
+
   return e;
 });
 

@@ -33,29 +33,29 @@ Add the tags and values...
 
 E.g.:
 
-| Tags | Values |
-| ------ | ------ |
-| short_name | My Site |
-| name | My Site Full Name |
-| start_url | / |
-| background_color | #FFFFFF |
-| theme_color | #FFFFFF |
-| display | standalone |
+| Tags              | Values            |
+| ----------------- | ----------------- |
+| short_name        | My Site           |
+| name              | My Site Full Name |
+| start_ur          | /                 |
+| background_color  | #FFFFFF           |
+| theme_color       | #FFFFFF           |
+| display           | standalone        |
 
-**You can upload your icons in the configurations, but you need save to upload the file!**
+**_You can upload your icons in the configurations, but you need save to upload the file!_**
 
-**All the files uploaded are listed in the configuration!**
+**_All the files uploaded are listed in the configuration!_**
 
 Add your tag icons...
 
 E.g.:
 
-| SRC | Type | Sizes |
-| ------ | ------ | ------ |
+| SRC                                            | Type      | Sizes   |
+| ---------------------------------------------- | --------- | ------- |
 | /media/pwa/manifest/icons/default/icon-192.png | image/png | 192x192 |
 | /media/pwa/manifest/icons/default/icon-512.png | image/png | 512x512 |
 
-**After save, click on button to generate manifest.json**
+**_After save, click on button to generate manifest.json_**
 
 ### Configure your Service Worker
 
@@ -64,29 +64,29 @@ Add your pre cached routes...
 E.g.:
 
 | Route |
-| ------ |
-| / |
+| ----- |
+| /     |
 | /cat1 |
 | /cat2 |
 | /cat2 |
 
 Configure your cache max age...
 
-**In this field you can select 1-7 days.**
+**_In this field you can select 1-7 days._**
 
 Add your cache prefix...
 
 E.g.:
-```
+```text
 my-site-prd
 ```
 
 Add your cache suffix...
 
-**If empty, the value is the deploy version.**
+**_If empty, the value is the deploy version._**
 
 E.g.:
-```
+```text
 v1
 ```
 
@@ -97,6 +97,6 @@ This configuration is if you wants add the [OneSignal](https://onesignal.com) in
 Add your appId...
 
 E.g.:
-```
+```text
 1234asd-asd1234-1234asd-asd1234
 ```

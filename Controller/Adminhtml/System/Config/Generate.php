@@ -47,7 +47,6 @@ class Generate extends Action
 			$status = true;
 			$message = __("manifest.json criado com sucesso!");
 		} catch (\Exception $e) {
-			echo $e->getMessage();
 			$message = __("Erro ao criar manifest.json!");
 		}
 
@@ -60,7 +59,7 @@ class Generate extends Action
 	{
         $content = new \stdClass;
         $tags = $this->_getConfig('manifest_tags');
-        $tags = unserialize($tags);
+        $tags = \unserialize($tags);
 
         foreach ($tags as $data)
         {

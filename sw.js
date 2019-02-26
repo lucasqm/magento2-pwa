@@ -4,139 +4,19 @@ var scope = "prod";
 if(!PRODUCTION){
   scope = "dev";
 }
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-core.'+scope+'.js');
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-routing.'+scope+'.js');
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-strategies.'+scope+'.js');
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-cache-expiration.'+scope+'.js');
+importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-core."+scope+".js");
+importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-routing."+scope+".js");
+importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-strategies."+scope+".js");
+importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-cache-expiration."+scope+".js");
 
 const version = "v1.0.5";
 const blackList = [
-  'webadmin',
-  'checkout',
-  'customer'
+  "webadmin",
+  "checkout",
+  "customer"
 ];
 
 config = {};
-
-loadCachedConfig().then(() => {
-
-  if(!PRODUCTION){
-    workbox.core.setLogLevel(workbox.core.LOG_LEVELS.log);
-  }
-
-  workbox.core.setCacheNameDetails({
-    prefix: config.cachePrefix,
-    suffix: config.cacheSuffix,
-    precache: 'precache-'.concat(config.cachePrefix),
-    runtime: 'runtime-'.concat(config.cachePrefix)
-  });
-
-  workbox.routing.registerRoute(
-    /.*\.js(?:($)|(\?))/g,
-    workbox.strategies.networkFirst({
-      cacheName: 'js-cache',
-      plugins: [
-        new workbox.expiration.Plugin({
-          maxAgeSeconds: config.cacheMaxAgeSeconds,
-        }),
-      ]
-    })
-  );
-
-  workbox.routing.registerRoute(
-    /.*\.css(?:($)|(\?))/g,
-    workbox.strategies.staleWhileRevalidate({
-      cacheName: 'css-cache',
-      plugins: [
-        new workbox.expiration.Plugin({
-          maxAgeSeconds: config.cacheMaxAgeSeconds,
-        }),
-      ]
-    })
-  );
-
-  workbox.routing.registerRoute(
-    /.*\.(?:png|jpg|jpeg|svg|gif|ico)(?:($)|(\?))/g,
-    workbox.strategies.staleWhileRevalidate({
-      cacheName: 'image-cache',
-      plugins: [
-        new workbox.expiration.Plugin({
-          maxAgeSeconds: config.cacheMaxAgeSeconds,
-        }),
-      ]
-    })
-  );
-
-  workbox.routing.registerRoute(
-    /.*\.(?:ttf|otf|woff|woff2|eot)(?:($)|(\?))/g,
-    workbox.strategies.staleWhileRevalidate({
-      cacheName: 'font-cache',
-      plugins: [
-        new workbox.expiration.Plugin({
-          maxAgeSeconds: config.cacheMaxAgeSeconds
-        }),
-      ]
-    })
-  );
-
-});
-
-self.addEventListener('install', async e => {
-  config = await loadConfigs();
-  loadPreCache();
-  return self.skipWaiting();
-});
-
-self.addEventListener('activate', e => {
-  loadCachedConfig().then( () => {
-    if(e.tag !== config.cacheSuffix)
-    {
-      flushCache(e);
-      console.log('Cache cleared!');
-    }
-  });
-  self.clients.claim();
-});
-
-self.addEventListener('fetch', async e => {
-  const req = e.request;
-  const url = new URL(req.url);
-  const destination = req.destination;
-  var fetchPermited = true;
-
-  blackList.forEach(tag => {
-    if(req.url.includes(tag)){
-      fetchPermited = false;
-    }
-  });
-
-  if (fetchPermited && (url.origin === location.origin && 
-    req.method === 'GET' && 
-    req.headers.get('accept').includes('text/html') && 
-    destination === 'document'
-  )) {
-    e.respondWith( networkAndCache(req) );
-  } else if (!navigator.onLine && !fetchPermited && (url.origin === location.origin && 
-    req.method === 'GET' && 
-    req.headers.get('accept').includes('text/html') && 
-    destination === 'document'
-  )) {
-    e.respondWith( fallBackCache() );
-  }
-
-  return e;
-});
-
-self.addEventListener('sync', e => {
-  console.log('Sync Action!');
-  loadCachedConfig().then( () => {
-    if(e.tag !== config.cacheSuffix)
-    {
-      flushCache(e);
-      console.log('Cache cleared!');
-    }
-  });
-});
 
 function flushCache(e)
 {
@@ -177,8 +57,8 @@ async function networkAndCache(req) {
     await cache.put(req, fresh.clone());
     return fresh;
   } catch (e) {
-    console.log('Fetch failed!', e);
-    const cached = await cache.match(req).then( response => {
+    console.log("Fetch failed!", e);
+    const cached = await cache.match(req).then( (response) => {
       return response || fallBackCache();
     });
     return cached;
@@ -187,7 +67,7 @@ async function networkAndCache(req) {
 
 async function fallBackCache()
 {
-  console.log('Loaded FallBack Cache instead!');
+  console.log("Loaded FallBack Cache instead!");
   const cache = await caches.open(config.cacheName.offline);
   const cached = await cache.match(config.staticAssets.offline);
   return cached;
@@ -195,21 +75,21 @@ async function fallBackCache()
 
 function createCacheBustedRequest(url)
 {
-  let request = new Request(url, {cache: 'reload'});
-  if ('cache' in request) {
+  let request = new Request(url, {cache: "reload"});
+  if ("cache" in request) {
     return request;
   }
 
   let bustedUrl = new URL(url, self.location.href);
-  bustedUrl.search += (bustedUrl.search ? '&' : '') + 'cachebust=' + Date.now();
+  bustedUrl.search += (bustedUrl.search ? "&" : "") + "cachebust=" + Date.now();
   return new Request(bustedUrl);
 }
 
 async function loadConfigs()
 {
   const configSetup = {
-    configUrl: '/pwa/config/cache',
-    configCacheName: 'config-cache'
+    configUrl: "/pwa/config/cache",
+    configCacheName: "config-cache"
   };
   const cache = await caches.open(configSetup.configCacheName);
 
@@ -218,7 +98,7 @@ async function loadConfigs()
     const clone = fresh.clone();
     if(fresh.status !== 200)
     {
-      throw new Error('Looks like there was a problem. Status Code: ' + fresh.status);
+      throw new Error("Looks like there was a problem. Status Code: " + fresh.status);
     }
     const data = await fresh.json();
     try{
@@ -236,8 +116,8 @@ async function loadConfigs()
 async function loadCachedConfig()
 {
   const configSetup = {
-    configUrl: '/pwa/config/cache',
-    configCacheName: 'config-cache'
+    configUrl: "/pwa/config/cache",
+    configCacheName: "config-cache"
   };
   const cache = await caches.open(configSetup.configCacheName);
   cached = await cache.match(configSetup.configUrl);
@@ -248,3 +128,123 @@ async function loadCachedConfig()
     config = await loadConfigs();
   }
 }
+
+loadCachedConfig().then(() => {
+
+  if(!PRODUCTION){
+    workbox.core.setLogLevel(workbox.core.LOG_LEVELS.log);
+  }
+
+  workbox.core.setCacheNameDetails({
+    prefix: config.cachePrefix,
+    suffix: config.cacheSuffix,
+    precache: "precache-".concat(config.cachePrefix),
+    runtime: "runtime-".concat(config.cachePrefix)
+  });
+
+  workbox.routing.registerRoute(
+    /.*\.js(?:($)|(\?))/g,
+    workbox.strategies.networkFirst({
+      cacheName: "js-cache",
+      plugins: [
+        new workbox.expiration.Plugin({
+          maxAgeSeconds: config.cacheMaxAgeSeconds,
+        }),
+      ]
+    })
+  );
+
+  workbox.routing.registerRoute(
+    /.*\.css(?:($)|(\?))/g,
+    workbox.strategies.staleWhileRevalidate({
+      cacheName: "css-cache",
+      plugins: [
+        new workbox.expiration.Plugin({
+          maxAgeSeconds: config.cacheMaxAgeSeconds,
+        }),
+      ]
+    })
+  );
+
+  workbox.routing.registerRoute(
+    /.*\.(?:png|jpg|jpeg|svg|gif|ico)(?:($)|(\?))/g,
+    workbox.strategies.staleWhileRevalidate({
+      cacheName: "image-cache",
+      plugins: [
+        new workbox.expiration.Plugin({
+          maxAgeSeconds: config.cacheMaxAgeSeconds,
+        }),
+      ]
+    })
+  );
+
+  workbox.routing.registerRoute(
+    /.*\.(?:ttf|otf|woff|woff2|eot)(?:($)|(\?))/g,
+    workbox.strategies.staleWhileRevalidate({
+      cacheName: "font-cache",
+      plugins: [
+        new workbox.expiration.Plugin({
+          maxAgeSeconds: config.cacheMaxAgeSeconds
+        }),
+      ]
+    })
+  );
+
+});
+
+self.addEventListener("install", async (e) => {
+  config = await loadConfigs();
+  loadPreCache();
+  return self.skipWaiting();
+});
+
+self.addEventListener("activate", (e) => {
+  loadCachedConfig().then( () => {
+    if(e.tag !== config.cacheSuffix)
+    {
+      flushCache(e);
+      console.log("Cache cleared!");
+    }
+  });
+  self.clients.claim();
+});
+
+self.addEventListener("fetch", async (e) => {
+  const req = e.request;
+  const url = new URL(req.url);
+  const destination = req.destination;
+  var fetchPermited = true;
+
+  blackList.forEach((tag) => {
+    if(req.url.includes(tag)){
+      fetchPermited = false;
+    }
+  });
+
+  if (fetchPermited && (url.origin === location.origin && 
+    req.method === "GET" && 
+    req.headers.get("accept").includes("text/html") && 
+    destination === "document"
+  )) {
+    e.respondWith( networkAndCache(req) );
+  } else if (!navigator.onLine && !fetchPermited && (url.origin === location.origin && 
+    req.method === "GET" && 
+    req.headers.get("accept").includes("text/html") && 
+    destination === "document"
+  )) {
+    e.respondWith( fallBackCache() );
+  }
+
+  return e;
+});
+
+self.addEventListener("sync", (e) => {
+  console.log("Sync Action!");
+  loadCachedConfig().then( () => {
+    if(e.tag !== config.cacheSuffix)
+    {
+      flushCache(e);
+      console.log("Cache cleared!");
+    }
+  });
+});

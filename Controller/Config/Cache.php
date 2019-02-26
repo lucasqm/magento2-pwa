@@ -68,7 +68,7 @@ class Cache extends \Magento\Framework\App\Action\Action
     private function _getDefaultAssets()
     {
         $confRoutes = $this->_getConfig('sw_cache_routes');
-        $confRoutes = unserialize($confRoutes);
+        $confRoutes = \unserialize($confRoutes);
         $response = [];
         foreach ($confRoutes as $data) {
             $response[] = $data['route'];

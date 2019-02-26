@@ -2,6 +2,8 @@
 
 # Magento 2 PWA
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8320beeb684040a28248afe8c08e84ea)](https://app.codacy.com/app/lucasqm/magento2-pwa?utm_source=github.com&utm_medium=referral&utm_content=lucasqm/magento2-pwa&utm_campaign=Badge_Grade_Dashboard)
+
 This a simple module to make your site PWA.
 
 ## Installation

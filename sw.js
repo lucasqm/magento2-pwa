@@ -32,7 +32,7 @@ loadCachedConfig().then(() => {
   });
 
   workbox.routing.registerRoute(
-    /.*\.js/,
+    /.*\.js(?:($)|(\?))/g,
     workbox.strategies.networkFirst({
       cacheName: 'js-cache',
       plugins: [
@@ -44,7 +44,7 @@ loadCachedConfig().then(() => {
   );
 
   workbox.routing.registerRoute(
-    /.*\.css/,
+    /.*\.css(?:($)|(\?))/g,
     workbox.strategies.staleWhileRevalidate({
       cacheName: 'css-cache',
       plugins: [
@@ -56,7 +56,7 @@ loadCachedConfig().then(() => {
   );
 
   workbox.routing.registerRoute(
-    /.*\.(?:png|jpg|jpeg|svg|gif|ico)/g,
+    /.*\.(?:png|jpg|jpeg|svg|gif|ico)(?:($)|(\?))/g,
     workbox.strategies.staleWhileRevalidate({
       cacheName: 'image-cache',
       plugins: [
@@ -68,7 +68,7 @@ loadCachedConfig().then(() => {
   );
 
   workbox.routing.registerRoute(
-    /.*\.(?:ttf|otf|woff|woff2|eot)/g,
+    /.*\.(?:ttf|otf|woff|woff2|eot)(?:($)|(\?))/g,
     workbox.strategies.staleWhileRevalidate({
       cacheName: 'font-cache',
       plugins: [
@@ -120,7 +120,7 @@ self.addEventListener('fetch', async e => {
     req.method === 'GET' && 
     req.headers.get('accept').includes('text/html') && 
     destination === 'document'
-  )){
+  )) {
     e.respondWith( fallBackCache() );
   }
 
@@ -128,6 +128,7 @@ self.addEventListener('fetch', async e => {
 });
 
 self.addEventListener('sync', e => {
+  console.log('Sync Action!');
   loadCachedConfig().then( () => {
     if(e.tag !== config.cacheSuffix)
     {
